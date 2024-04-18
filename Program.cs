@@ -3,6 +3,8 @@ using FeedService.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddHttpClient("UserServiceClient", client =>
 {
@@ -17,18 +19,14 @@ builder.Services.AddHttpClient("PostServiceClient", client =>
 builder.Services.AddTransient<IUserServiceClient, UserServiceClient>();
 builder.Services.AddTransient<IPostServiceClient, PostServiceClient>();
 
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
 
 app.UseAuthorization();
 

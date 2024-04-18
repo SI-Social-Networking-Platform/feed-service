@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FeedService.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("feed")]
 public class FeedController : ControllerBase
 {
     private readonly IUserServiceClient _userServiceClient;
