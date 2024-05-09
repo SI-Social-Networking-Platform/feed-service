@@ -11,7 +11,7 @@ public class UserServiceClient : IUserServiceClient
 
     public async Task<List<int>> GetFollowedUserIds(int userId)
     {
-        var response = await _httpClient.GetAsync($"api/users/{userId}/follows");
+        var response = await _httpClient.GetAsync($"/user-service/{userId}/follows");
         response.EnsureSuccessStatusCode();
         var followedUserIds = await response.Content.ReadFromJsonAsync<List<int>>();
         return followedUserIds ?? new List<int>();

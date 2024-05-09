@@ -1,3 +1,5 @@
+using System.Text;
+using System.Text.Json;
 using System.Web;
 using FeedService.Models;
 
@@ -14,13 +16,13 @@ public class PostServiceClient : IPostServiceClient
 
     public async Task<List<Post>> GetPostsByUserIds(List<int> userIds)
     {
-        var query = HttpUtility.ParseQueryString(string.Empty);
-        foreach (var id in userIds)
-        {
-            query["userIds"] = id.ToString();
-        }
-        var url = $"api/posts?{query}";
-        var response = await _httpClient.GetAsync(url);
+        var content = new StringContent(
+            JsonSerializer.Serialize(userIds),
+            Encoding.UTF8,
+            "application/json"
+        );
+
+        var response = await _httpClient.PostAsync("/post/byUserIds", content);
         response.EnsureSuccessStatusCode();
         var posts = await response.Content.ReadFromJsonAsync<List<Post>>();
         return posts ?? new List<Post>();

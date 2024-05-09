@@ -1,4 +1,7 @@
+using System.Text;
 using FeedService.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +22,22 @@ builder.Services.AddHttpClient("PostServiceClient", client =>
 builder.Services.AddTransient<IUserServiceClient, UserServiceClient>();
 builder.Services.AddTransient<IPostServiceClient, PostServiceClient>();
 
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtKey = builder.Configuration["Jwt:Key"];
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtIssuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+        };
+    });
 
 var app = builder.Build();
 
@@ -28,6 +47,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseRouting(); 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
