@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FeedService.Controllers;
-[Authorize]
 [ApiController]
 [Route("feed")]
 public class FeedController : ControllerBase
@@ -18,6 +17,7 @@ public class FeedController : ControllerBase
         _postServiceClient = postServiceClient;
     }
 
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> GetFeed()
     {
